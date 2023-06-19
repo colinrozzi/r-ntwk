@@ -19,24 +19,34 @@
   )
 
 (struct network-state [active-nodes comms])
-
-(struct active-node [address past-connections])
+; TODO: holding past comms in both places is a parallel data structure
+(struct active-node [address past-comms])
 
 (define (active-node address)
-  (active-node address past-connections))
+  (active-node address past-comms))
 
 (define (active-node:add-comm an comm)
   (struct-copy active-node an
-               [past-connections (cons comm (active-node-past-connections active-node))]))
+               [past-comms (cons comm (active-node-past-comms active-node))]))
 
 (define (node-manager-incoming node-manager)
   (node-incoming (node-manager-node node-manager)))
 
 (define (active-network-operations node-manager)
   (let loop ([network-state (network-state:make)])
-    (define received-event (async-channel-get (node-manager-incoming node-manager)))
-    (define new-network-state (network-state:update ns received-event))
-    (loop new-network-state)))
+    (define new-network-state
+      (cond
+        [(async-channel-try-get (node-manager-incoming node-manager)) =>
+                                                                      (λ (evt) (network-state:update network-state evt))]
+        [else network-state]))
+    (define final-network-state (network-state:take-action new-network-state))
+    (loop final-network-state)))
+    
+    ; it is an issue i am only taking action on the network when I am getting new info
+    ; maybe split taking new info from node and updating network state from taking actions and communicate
+    ; changes to the network state
+    ; or just process network incoming messages when they are ready to be read - and otherwise continually loop
+    ; and check if any new actions need to be taken
 
 (define (network-state:update ns event)
   (define comm (comm-record: make event))
@@ -44,7 +54,7 @@
                [active-nodes (network-state:update-active-nodes ns comm-record)]
                [events (cons comm-record (network-state-comms))]))
 
-()
+
     
     ;wait for a message to come in
     ;update the network state (#events, consensus, etc)
