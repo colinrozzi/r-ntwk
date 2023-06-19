@@ -1,0 +1,12 @@
+#lang racket
+
+(provide
+ (contract-out
+  [event? contract?]
+  [event:parse (-> jsexpr? event?)]
+  [event:to-json (-> event? jsexpr?)]))
+
+(struct event [origin-address id data])
+
+(define (event:parse json-data)
+  json-data)
