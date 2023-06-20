@@ -34,6 +34,11 @@
                                        (println e)))])
       (thread (λ () (listen-on-network node listener))))
 
+    (with-handlers ([exn:fail (λ (e) (let ([error-output-port (open-output-file (string-append "logic_" (number->string (node-port node)) "_listening"))])
+                                       (println e)))])
+      (thread (λ () (run-network-logic node))))
+
+
     (if (async-channel-get (node-shutdown-channel node))
         (begin 
           (tcp-close listener)
@@ -42,6 +47,7 @@
           (close-output-port (current-output-port)))
         "don't know what happened, got false off the channel")))
 
+;listening------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 (define (listen-on-network node listener)
   (let listening-loop ()
     (define msg (accept-from-listener listener))
@@ -54,13 +60,16 @@
   (define msg (event:parse (read-json in)))`
   (close-output-port out)
   msg)
-
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;sending---------------------------------------------------------------------------------------------------------------------------------------
 (define (node:send address network-message)
   (define-values (in out) (tcp-connect (address-host address) (address-port address)))
   (write-json network-message out)
   (close-input-port in)
   (close-output-port out))
-;------------------------------------------utils
+
+;------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 (define (log s)
   (define cur-date (seconds->date (current-seconds)))
   (define date-string (string-append
