@@ -1,4 +1,0 @@
-"59:43:36 starting: 49113"
-"59:43:37 sen: burst dest: 48897"
-"59:43:38 sen: liar dest: 48965"
-"59:44:38 rec: western"

@@ -1,12 +1,12 @@
 #lang racket
 
 (require json)
-(require "node.rkt")
 (require "address.rkt")
 
 (provide
  (contract-out
   [event? contract?]
+  [event-origin-address (-> event? address?)]
   [event:parse (-> jsexpr? event?)]
   [event:to-json (-> event? jsexpr?)]
   [event:make (-> address? number? any/c event?)]

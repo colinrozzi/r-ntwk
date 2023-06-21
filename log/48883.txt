@@ -1,5 +1,0 @@
-"59:43:36 starting: 48883"
-"59:43:37 rec: wassup"
-"59:43:37 rec: emerals"
-"59:44:38 sen: common dest: 48652"
-"59:44:39 sen: devil dest: 48897"

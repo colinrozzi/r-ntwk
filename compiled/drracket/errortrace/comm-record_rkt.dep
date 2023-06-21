@@ -1,0 +1,1 @@
+("8.8" tarm64osx ("63460a205cc23dfbb91d772a7ab131de1b2a255d" . "474085bbeecfb3d3f046821e0602544c40278bf1") #"/Users/colinrozzi/work/r-ntwk/address.rkt" #"/Users/colinrozzi/work/r-ntwk/event.rkt" (collects #"drracket" #"private" #"drracket-errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
